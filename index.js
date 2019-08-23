@@ -3,28 +3,38 @@ const assert= require('assert');
 
 const url='mongodb://localhost:27017/';
 const dbname= 'shyam';
+const dboper = require('./operations');
+MongoClient.connect(url).then((client) => {
+console.log('Connected correctly to server');
+    const db = client.db(dbname);
+dboper.insertDocument(db, { name: "Vadonut", description: "Test"},
+        "dishes")
+        .then((docs) => {
+            console.log("Insert Document:\n", docs);
 
-MongoClient.connect(url,(err ,client)=>{
+            return dboper.findDocuments(db, "dishes");
+        })
+        .then((docs) => {
+            console.log("Found Documents:\n", docs);
 
+            return dboper.updateDocument(db, { name: "Vadonut" },
+                    { description: "Updated Test" }, "dishes");
 
-assert.equal(err,null);
-console.log('connecterd to the server');
+        })
+        .then((result) => {
+            console.log("Updated Document:\n", result.result);
 
-const db = client.db(dbname);
-const collection=db.collection('details');
-collection.insertOne({"name":"devilal","age":"20"},(err,result)=>{
-	assert.equal(err,null);
-	console.log(result.ops);
-	collection.find({}).toArray((err,docs)=>{
-		assert.equal(err,null);
-console.log('found:\n');
-console.log(docs);
-db.dropCollection('details',(err,result)=>{
-	assert.equal(err,null);
-	console.log(result +"\n dropped");
-client.close();
-}); 
-});
-});
+            return dboper.findDocuments(db, "dishes");
+        })
+        .then((docs) => {
+            console.log("Found Updated Documents:\n", docs);
+                            
+            return db.dropCollection("dishes");
+        })
+        .then((result) => {
+            console.log("Dropped Collection: ", result);
 
-});
+            return client.close();
+        })
+        .catch((err) => console.log(err));
+}).catch((err) => console.log(err));
