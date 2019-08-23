@@ -12,19 +12,19 @@ console.log('connecterd to the server');
 
 const db = client.db(dbname);
 const collection=db.collection('details');
-/*collection.insertOne({"name":"devilal","age":"20"},(err,result)=>{
+collection.insertOne({"name":"devilal","age":"20"},(err,result)=>{
 	assert.equal(err,null);
 	console.log(result.ops);
 	collection.find({}).toArray((err,docs)=>{
 		assert.equal(err,null);
 console.log('found:\n');
-console.log(docs);*/
+console.log(docs);
 db.dropCollection('details',(err,result)=>{
 	assert.equal(err,null);
-	console.log(result.ops +"\n dropped");
+	console.log(result +"\n dropped");
 client.close();
 }); 
-client.close();
-
+});
+});
 
 });
